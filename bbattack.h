@@ -32,7 +32,7 @@
 
 // Dumb7Fill, based on the code from the Chess Programming Wiki.
 // Near-zero memory, very slow, could be faster with a smart compiler.
-#define USE_DUMB7FILL
+//#define USE_DUMB7FILL
 
 // Hyperbola Quintessence, based in part on the code from Amoeba.
 // Low memory, reasonably fast, worse on Intel compared to AMD.
@@ -40,6 +40,10 @@
 
 //#define USE_HYPERBOLA_RANK // By default, we use a rank-attack lookup. 
                              // By enabling this, we use Hyperbola Quintessence for ranks too, which is slower.
+
+// Steffan Westcott's Kogge-Stone algorithm.
+// Near-zero memory, about the same speed as Dumb7Fill.
+#define USE_KOGGE_STONE
 
 // Volker Annuss' fixed-shift fancy magic bitboards.
 // High memory, very fast.
