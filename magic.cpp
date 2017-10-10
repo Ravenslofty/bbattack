@@ -26,8 +26,8 @@
 #include <stdint.h>
 
 #include "bbattack.h"
-#include "bbattack-private.h"
 
+#ifdef USE_MAGIC
 // Using the code kindly provided by Volker Annuss:
 // http://www.talkchess.com/forum/viewtopic.php?topic_view=threads&p=670709&t=60065
 
@@ -224,44 +224,43 @@ static uint64_t CalcBishopAttacks(int sq, uint64_t block)
     return result;
 }
 
-namespace Magic {
+extern "C" {
+uint64_t BBAttackBishop(const uint64_t occ, const unsigned int sq)
+{
+    return *(BishopOffset[sq] + (((occ & BishopMask[sq]) * BishopMagic[sq]) >> 55));
+}
 
-    uint64_t Bishop(const uint64_t occ, const int sq)
-    {
-        return *(BishopOffset[sq] + (((occ & BishopMask[sq]) * BishopMagic[sq]) >> 55));
+uint64_t BBAttackRook(const uint64_t occ, const unsigned int sq)
+{
+    return *(RookOffset[sq] + (((occ & RookMask[sq]) * RookMagic[sq]) >> 52));
+}
+
+void BBAttackInit()
+{
+    uint64_t b, *index;
+    int sq;
+
+    // Bishops
+    for (sq = 0; sq < 64; sq++) {
+        b = 0;
+        BishopMask[sq] = CalcBishopMask(sq);
+
+        do {
+            index = (uint64_t*)(BishopOffset[sq] + (((b & BishopMask[sq]) * BishopMagic[sq]) >> 55));
+            *index = CalcBishopAttacks(sq, b);
+        } while ((b = SNOOB(BishopMask[sq], b)));
     }
 
-    uint64_t Rook(const uint64_t occ, const int sq)
-    {
-        return *(RookOffset[sq] + (((occ & RookMask[sq]) * RookMagic[sq]) >> 52));
-    }
+    // Rooks
+    for (sq = 0; sq < 64; sq++) {
+        b = 0;
+        RookMask[sq] = CalcRookMask(sq);
 
-
-    void Init()
-    {
-        uint64_t b, *index;
-        int sq;
-
-        // Bishops
-        for (sq = 0; sq < 64; sq++) {
-            b = 0;
-            BishopMask[sq] = CalcBishopMask(sq);
-
-            do {
-                index = (uint64_t*)(BishopOffset[sq] + (((b & BishopMask[sq]) * BishopMagic[sq]) >> 55));
-                *index = CalcBishopAttacks(sq, b);
-            } while ((b = SNOOB(BishopMask[sq], b)));
-        }
-
-        // Rooks
-        for (sq = 0; sq < 64; sq++) {
-            b = 0;
-            RookMask[sq] = CalcRookMask(sq);
-
-            do {
-                index = (uint64_t*)(RookOffset[sq] + (((b & RookMask[sq]) * RookMagic[sq]) >> 52));
-                *index = CalcRookAttacks(sq, b);
-            } while ((b = SNOOB(RookMask[sq], b)));
-        }
+        do {
+            index = (uint64_t*)(RookOffset[sq] + (((b & RookMask[sq]) * RookMagic[sq]) >> 52));
+            *index = CalcRookAttacks(sq, b);
+        } while ((b = SNOOB(RookMask[sq], b)));
     }
 }
+}
+#endif // #ifdef USE_MAGIC

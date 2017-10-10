@@ -27,31 +27,35 @@
 
 #include <stdint.h>
 
+// Which bitboard attack generation system should be used?
+// Note: don't define multiple attack systems, because you'll get linker errors.
+
+// Hyperbola Quintessence, based in part on the code from Amoeba.
+// Low memory, reasonably fast, worse on Intel compared to AMD.
+#define USE_HYPERBOLA
+
+#define USE_HYPERBOLA_RANK // By default, we use a rank-attack lookup. 
+                             // By enabling this, we use Hyperbola Quintessence for ranks too, which is slower.
+
+// Volker Annuss' fixed-shift fancy magic bitboards.
+// High memory, very fast.
+//#define USE_MAGIC
+
 #ifdef __cplusplus
 extern "C" {
 #endif // #ifdef __cplusplus
-
-// Types of bitboard attack generation systems.
-enum {
-    BBAttackStart,
-    BBAttackMagic, // Volker Annuss's fixed-shift fancy magic bitboards.
-    BBAttackFinish
-};
-
-// Which bitboard attack generation system should be used?
-static const int BBAttackMethodSliders = BBAttackMagic;
 
 // Initialisation code
 extern void BBAttackInit();
 
 // Bishop sliding moves
-extern uint64_t BBAttackBishop(uint64_t occupancy, int square);
+extern uint64_t BBAttackBishop(const uint64_t occupancy, const unsigned int square);
 
 // Rook sliding moves
-extern uint64_t BBAttackRook(uint64_t occupancy, int square);
+extern uint64_t BBAttackRook(const uint64_t occupancy, const unsigned int square);
 
 #ifdef __cplusplus
 }
-#endif // #ifdef __cplusplus
+#endif
 
 #endif // #ifndef BBATTACK_H
