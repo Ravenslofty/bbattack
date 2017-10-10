@@ -26,48 +26,7 @@
 
 #ifdef USE_KOGGE_STONE
 
-enum {
-    North,
-    South,
-    East,
-    West,
-    Northeast,
-    Southeast,
-    Southwest,
-    Northwest
-};
-
-constexpr int DirShift[8] = {
-    +8, // North
-    -8, // South
-    +1, // East
-    -1, // West
-    +9, // Northeast
-    -7, // Southeast
-    -9, // Southwest
-    +7  // Northwest
-};
-
-constexpr uint64_t DirMask[8] = {
-    0xFFFFFFFFFFFFFFFFULL, // North     (no mask)
-    0xFFFFFFFFFFFFFFFFULL, // South     (no mask)
-    0xFEFEFEFEFEFEFEFEULL, // East      (A-file)
-    0x7F7F7F7F7F7F7F7FULL, // West      (H-file)
-    0xFEFEFEFEFEFEFEFEULL, // Northeast (A-file)
-    0xFEFEFEFEFEFEFEFEULL, // Southeast (A-file)
-    0x7F7F7F7F7F7F7F7FULL, // Southwest (H-file)
-    0x7F7F7F7F7F7F7F7FULL, // Northwest (H-file)
-};
-
-template<int shift>
-uint64_t Shift(uint64_t x)
-{
-    if (shift > 0) {
-        return x << shift;
-    } else {
-        return x >> -shift;
-    }
-}
+#include "bbattack-private.h"
 
 template<int dir>
 uint64_t KoggeStone(uint64_t empty, uint64_t fill)
@@ -90,20 +49,20 @@ uint64_t BBAttackBishop(const uint64_t occ, const unsigned int sq)
 {
     uint64_t empty = ~occ;
     uint64_t bishop = 1ULL << sq;
-    return KoggeStone<Northeast>(empty, bishop) |
-           KoggeStone<Northwest>(empty, bishop) |
-           KoggeStone<Southeast>(empty, bishop) |
-           KoggeStone<Southwest>(empty, bishop);
+    return KoggeStone<Direction::Northeast>(empty, bishop) |
+           KoggeStone<Direction::Northwest>(empty, bishop) |
+           KoggeStone<Direction::Southeast>(empty, bishop) |
+           KoggeStone<Direction::Southwest>(empty, bishop);
 }
 
 uint64_t BBAttackRook(const uint64_t occ, const unsigned int sq)
 {
     uint64_t empty = ~occ;
     uint64_t rook = 1ULL << sq;
-    return KoggeStone<North>(empty, rook) |
-           KoggeStone<South>(empty, rook) |
-           KoggeStone<East >(empty, rook) |
-           KoggeStone<West >(empty, rook);
+    return KoggeStone<Direction::North>(empty, rook) |
+           KoggeStone<Direction::South>(empty, rook) |
+           KoggeStone<Direction::East >(empty, rook) |
+           KoggeStone<Direction::West >(empty, rook);
 }
 
 void BBAttackInit()

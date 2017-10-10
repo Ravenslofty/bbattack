@@ -42,8 +42,8 @@
                              // By enabling this, we use Hyperbola Quintessence for ranks too, which is slower.
 
 // Steffan Westcott's Kogge-Stone algorithm.
-// Near-zero memory, about the same speed as Dumb7Fill.
-#define USE_KOGGE_STONE
+// Near-zero memory, faster than Dumb7Fill.
+//#define USE_KOGGE_STONE
 
 // Volker Annuss' fixed-shift fancy magic bitboards.
 // High memory, very fast.
