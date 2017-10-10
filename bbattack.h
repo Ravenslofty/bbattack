@@ -40,7 +40,7 @@
 
 // Michael Hoffman's Obstruction Difference. Similiarish to HQ.
 // Low memory, reasonably fast. 
-#define USE_OBSTRUCTION
+//#define USE_OBSTRUCTION
 
 // Steffan Westcott's Kogge-Stone algorithm.
 // Near-zero memory, faster than Dumb7Fill.
@@ -49,6 +49,10 @@
 // Volker Annuss' fixed-shift fancy magic bitboards.
 // High memory, very fast.
 //#define USE_MAGIC
+
+// Dann Corbit's "switch" approach. May God have mercy on your soul.
+// Zero memory, very long compile time, about Kogge-Stone speed.
+#define USE_SWITCH
 
 #ifdef __cplusplus
 extern "C" {
