@@ -30,6 +30,8 @@
 
 #ifdef USE_HYPERBOLA
 
+#include "bbattack-private.h"
+
 static struct {
     uint64_t DiagMask;
     uint64_t AntiDiagMask;
