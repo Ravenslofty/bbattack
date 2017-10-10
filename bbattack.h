@@ -38,13 +38,17 @@
 // Low memory, reasonably fast, worse on Intel compared to AMD.
 //#define USE_HYPERBOLA
 
+// Michael Hoffman's Obstruction Difference. Similiarish to HQ.
+// Low memory, reasonably fast. 
+#define USE_OBSTRUCTION
+
 // Steffan Westcott's Kogge-Stone algorithm.
 // Near-zero memory, faster than Dumb7Fill.
 //#define USE_KOGGE_STONE
 
 // Volker Annuss' fixed-shift fancy magic bitboards.
 // High memory, very fast.
-#define USE_MAGIC
+//#define USE_MAGIC
 
 #ifdef __cplusplus
 extern "C" {
