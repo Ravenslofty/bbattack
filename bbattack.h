@@ -62,6 +62,12 @@ extern uint64_t BBAttackBishop(const uint64_t occupancy, const unsigned int squa
 // Rook sliding moves
 extern uint64_t BBAttackRook(const uint64_t occupancy, const unsigned int square);
 
+// Helper for queen sliding moves
+static uint64_t BBAttackQueen(const uint64_t occupancy, const unsigned int square)
+{
+    return BBAttackBishop(occupancy, square) | BBAttackRook(occupancy, square);
+}
+
 #ifdef __cplusplus
 }
 #endif
