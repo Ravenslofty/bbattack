@@ -70,4 +70,9 @@ uint64_t Shift(uint64_t x)
     }
 }
 
+uint64_t Swap(uint64_t x)
+{
+    return __builtin_bswap64(x);
+}
+
 #endif // #ifndef BBATTACK_PRIVATE_H

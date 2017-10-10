@@ -43,8 +43,7 @@ namespace Detail {
     enum MaskType {
         Diagonal,
         Antidiagonal,
-        File,
-        Rank
+        File
     };
 
     template<MaskType type> uint64_t Mask(const unsigned int sq);
@@ -67,44 +66,12 @@ namespace Detail {
         return HyperbolaMasks[sq].FileMask;
     }
 
-    template<> uint64_t Mask<MaskType::Rank>(const unsigned int sq)
-    {
-        assert(sq >= 0 && sq <= 63);
-        return HyperbolaMasks[sq].RankMask;
-    }
-
-    template<MaskType type> uint64_t Swap(uint64_t x)
-    {
-        return __builtin_bswap64(x);
-    }
-
-#ifdef USE_HYPERBOLA_RANK
-    template<> uint64_t Swap<MaskType::Rank>(uint64_t x)
-    {
-    static const unsigned short BitReverseTable65536[65536] =
-    {
-#   define R2(n)    n,     n + 2*16384, n + 1*16384, n + 3*16384
-#   define R4(n) R2(n), R2(n + 2*4096), R2(n + 1*4096), R2(n + 3*4096)
-#   define R6(n) R4(n), R4(n + 2*1024), R4(n + 1*1024), R4(n + 3*1024)
-#   define R8(n) R6(n), R6(n + 2*256), R6(n + 1*256), R6(n + 3*256)
-#   define R10(n) R8(n), R8(n + 2*64), R8(n + 1*64), R8(n + 3*64)
-#   define R12(n) R10(n), R10(n + 2*16), R10(n + 1*16), R10(n + 3*16)
-#   define R14(n) R12(n), R12(n + 2*4 ), R12(n + 1*4 ), R12(n + 3*4)
-        R14(0), R14(2), R14(1), R14(3)
-    };
-    return ((uint64_t)BitReverseTable65536[ x        & 0xFFFF] << 48) |
-           ((uint64_t)BitReverseTable65536[(x >> 16) & 0xFFFF] << 32) |
-           ((uint64_t)BitReverseTable65536[(x >> 32) & 0xFFFF] << 16) |
-           ((uint64_t)BitReverseTable65536[(x >> 48) & 0xFFFF]);
-    }
-#endif // #ifdef USE_HYPERBOLA_RANK
-
     template<MaskType type> uint64_t Hyperbola(const uint64_t occ, const unsigned int sq)
     {
         const uint64_t o = occ & Mask<type>(sq);
-        const uint64_t r = Swap<type>(o);
+        const uint64_t r = Swap(o);
         const uint64_t forward = o - (1ULL << sq);
-        const uint64_t reverse = Swap<type>(r - (1ULL << (sq ^ 63)));
+        const uint64_t reverse = Swap(r - (1ULL << (sq ^ 56)));
 
         return (forward ^ reverse) & Mask<type>(sq);
     }
@@ -128,11 +95,7 @@ uint64_t BBAttackBishop(const uint64_t occ, const unsigned int sq)
 
 uint64_t BBAttackRook(const uint64_t occ, const unsigned int sq)
 {
-#ifdef USE_HYPERBOLA_RANK
-    return Detail::Hyperbola<Detail::MaskType::Rank>(occ, sq) |
-#else
     return Detail::GetRankAttacks(occ, sq) | 
-#endif
         Detail::Hyperbola<Detail::MaskType::File>(occ, sq);
 }
 
@@ -168,7 +131,6 @@ void BBAttackInit()
             HyperbolaMasks[sq].AntiDiagMask |= 1ULL << dest;
         }
     }
-
 
     for (uint8_t occ = 0; occ < 64; occ++) {
         for (int file = 0; file < 8; file++) {

@@ -38,9 +38,6 @@
 // Low memory, reasonably fast, worse on Intel compared to AMD.
 //#define USE_HYPERBOLA
 
-//#define USE_HYPERBOLA_RANK // By default, we use a rank-attack lookup. 
-                             // By enabling this, we use Hyperbola Quintessence for ranks too, which is slower.
-
 // Steffan Westcott's Kogge-Stone algorithm.
 // Near-zero memory, faster than Dumb7Fill.
 //#define USE_KOGGE_STONE
