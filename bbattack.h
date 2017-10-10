@@ -30,11 +30,15 @@
 // Which bitboard attack generation system should be used?
 // Note: don't define multiple attack systems, because you'll get linker errors.
 
+// Dumb7Fill, based on the code from the Chess Programming Wiki.
+// Near-zero memory, very slow, could be faster with a smart compiler.
+#define USE_DUMB7FILL
+
 // Hyperbola Quintessence, based in part on the code from Amoeba.
 // Low memory, reasonably fast, worse on Intel compared to AMD.
-#define USE_HYPERBOLA
+//#define USE_HYPERBOLA
 
-#define USE_HYPERBOLA_RANK // By default, we use a rank-attack lookup. 
+//#define USE_HYPERBOLA_RANK // By default, we use a rank-attack lookup. 
                              // By enabling this, we use Hyperbola Quintessence for ranks too, which is slower.
 
 // Volker Annuss' fixed-shift fancy magic bitboards.
