@@ -105,33 +105,11 @@ void BBAttackInit()
 {
     int sq, dest;
 
-    const uint64_t file_mask = 0x0101010101010101ULL;
-    const uint64_t rank_mask = 0x00000000000000FFULL;
-
     for (sq = 0; sq < 64; sq++) {
-        const int file = sq % 8;
-        const int rank = sq / 8;
-
-        const uint64_t bit = 1ULL << sq;
-
-        HyperbolaMasks[sq].FileMask = (file_mask << file) & ~bit;
-        HyperbolaMasks[sq].RankMask = (rank_mask << 8*rank) & ~bit;
-
-        HyperbolaMasks[sq].DiagMask = 0;
-        for (dest = sq + 9; (dest % 8) != 0 && dest < 64; dest += 9) {
-            HyperbolaMasks[sq].DiagMask |= 1ULL << dest;
-        }
-        for (dest = sq - 7; (dest % 8) != 0 && dest >= 0; dest -= 7) {
-            HyperbolaMasks[sq].DiagMask |= 1ULL << dest;
-        }
-
-        HyperbolaMasks[sq].AntiDiagMask = 0;
-        for (dest = sq + 7; (dest % 8) != 7 && dest < 64; dest += 7) {
-            HyperbolaMasks[sq].AntiDiagMask |= 1ULL << dest;
-        }
-        for (dest = sq - 9; (dest % 8) != 7 && dest >= 0; dest -= 9) {
-            HyperbolaMasks[sq].AntiDiagMask |= 1ULL << dest;
-        }
+        HyperbolaMasks[sq].FileMask = GenMask<North, false>(sq) | GenMask<South, false>(sq);
+        HyperbolaMasks[sq].RankMask = GenMask<East, false>(sq) | GenMask<West, false>(sq);
+        HyperbolaMasks[sq].DiagMask = GenMask<Northeast, false>(sq) | GenMask<Southwest, false>(sq);
+        HyperbolaMasks[sq].AntiDiagMask = GenMask<Northwest, false>(sq) | GenMask<Southeast, false>(sq);
     }
 
     for (uint8_t occ = 0; occ < 64; occ++) {

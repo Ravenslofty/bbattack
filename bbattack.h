@@ -44,7 +44,7 @@
 
 // Volker Annuss' fixed-shift fancy magic bitboards.
 // High memory, very fast.
-//#define USE_MAGIC
+#define USE_MAGIC
 
 #ifdef __cplusplus
 extern "C" {

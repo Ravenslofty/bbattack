@@ -60,6 +60,28 @@ constexpr uint64_t DirMask[8] = {
     0x7F7F7F7F7F7F7F7FULL, // Northwest (H-file)
 };
 
+constexpr bool DirIsEast[8] = {
+    false, // North
+    false, // South
+    true,  // East
+    false, // West
+    true,  // Northeast
+    true,  // Southeast
+    false, // Southwest
+    false  // Northwest
+};
+
+constexpr bool DirIsWest[8] = {
+    false, // North
+    false, // South
+    false, // East
+    true,  // West
+    false, // Northeast
+    false, // Southeast
+    true,  // Southwest
+    true   // Northwest
+};
+
 template<int shift>
 uint64_t Shift(uint64_t x)
 {
@@ -73,6 +95,63 @@ uint64_t Shift(uint64_t x)
 uint64_t Swap(uint64_t x)
 {
     return __builtin_bswap64(x);
+}
+
+template<Direction dir>
+bool OnBoard(const int sq)
+{
+    constexpr int inc = DirShift[dir];
+    const int file = sq % 8;
+
+    if (inc > 0 && sq >= 64) {
+        return false;
+    }
+
+    if (inc < 0 && sq < 0) {
+        return false;
+    }
+
+    if (DirIsEast[dir] && file == 0) {
+        return false;
+    }
+
+    if (DirIsWest[dir] && file == 7) {
+        return false;
+    }
+
+    return true;
+}
+
+template<Direction dir, bool exclude_outer>
+uint64_t GenMask(const unsigned int sq)
+{
+    static_assert(dir >= 0 && dir <= 7, "Direction out of range");
+
+    uint64_t bb = 0;
+    constexpr int inc = DirShift[dir];
+    int dest;
+
+    const uint64_t outer_mask[8] = {
+        0x00FFFFFFFFFFFFFFULL, // North
+        0xFFFFFFFFFFFFFF00ULL, // South
+        0x7F7F7F7F7F7F7F7FULL, // East
+        0xFEFEFEFEFEFEFEFEULL, // West
+        0x007F7F7F7F7F7F7FULL, // Northeast
+        0x7F7F7F7F7F7F7F00ULL, // Southeast
+        0xFEFEFEFEFEFEFE00ULL, // Southwest
+        0x00FEFEFEFEFEFEFEULL  // Northwest
+    };
+
+    for (dest = sq + inc; OnBoard<dir>(dest); dest += inc) {
+        bb |= 1ULL << dest;
+    }
+
+    // Ignore outer bits if requested.
+    if (exclude_outer) {
+        bb &= outer_mask[dir];
+    }
+
+    return bb;
 }
 
 #endif // #ifndef BBATTACK_PRIVATE_H

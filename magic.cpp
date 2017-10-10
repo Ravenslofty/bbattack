@@ -24,10 +24,14 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "bbattack.h"
 
 #ifdef USE_MAGIC
+
+#include "bbattack-private.h"
+
 // Using the code kindly provided by Volker Annuss:
 // http://www.talkchess.com/forum/viewtopic.php?topic_view=threads&p=670709&t=60065
 
@@ -119,43 +123,27 @@ static uint64_t SNOOB(const uint64_t set, const uint64_t subset)
     return (subset - set) & set;
 }
 
-// Taken from Tord Romstad's example Looking for Magics code.
 static uint64_t CalcRookMask(int sq)
 {
-    uint64_t result = 0ULL;
-    int rk = sq/8, fl = sq%8, r, f;
-    for (r = rk+1; r <= 6; r++) {
-        result |= (1ULL << (fl + r*8));
-    }
-    for (r = rk-1; r >= 1; r--) {
-        result |= (1ULL << (fl + r*8));
-    }
-    for (f = fl+1; f <= 6; f++) {
-        result |= (1ULL << (f + rk*8));
-    }
-    for (f = fl-1; f >= 1; f--) {
-        result |= (1ULL << (f + rk*8));
-    }
+    uint64_t result = 0;
+
+    result |= GenMask<North, true>(sq);
+    result |= GenMask<South, true>(sq);
+    result |= GenMask<East,  true>(sq);
+    result |= GenMask<West,  true>(sq);
+   
     return result;
 }
 
-// Also taken from Tord Romstad's example Looking for Magics code.
 static uint64_t CalcBishopMask(int sq)
 {
-    uint64_t result = 0ULL;
-    int rk = sq/8, fl = sq%8, r, f;
-    for (r=rk+1, f=fl+1; r<=6 && f<=6; r++, f++) {
-        result |= (1ULL << (f + r*8));
-    }
-    for (r=rk+1, f=fl-1; r<=6 && f>=1; r++, f--) {
-        result |= (1ULL << (f + r*8));
-    }
-    for (r=rk-1, f=fl+1; r>=1 && f<=6; r--, f++) {
-        result |= (1ULL << (f + r*8));
-    }
-    for (r=rk-1, f=fl-1; r>=1 && f>=1; r--, f--) {
-        result |= (1ULL << (f + r*8));
-    }
+    uint64_t result = 0;
+    
+    result |= GenMask<Northeast, true>(sq);
+    result |= GenMask<Southeast, true>(sq);
+    result |= GenMask<Northwest, true>(sq);
+    result |= GenMask<Southwest, true>(sq);
+
     return result;
 }
 
