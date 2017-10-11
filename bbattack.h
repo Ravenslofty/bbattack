@@ -30,6 +30,10 @@
 // Which bitboard attack generation system should be used?
 // Note: don't define multiple attack systems, because you'll get linker errors.
 
+// The classical approach from Chess 4.5.
+// Low memory, medium speed.
+#define USE_CLASSICAL
+
 // Dumb7Fill, based on the code from the Chess Programming Wiki.
 // Near-zero memory, very slow, could be faster with a smart compiler.
 //#define USE_DUMB7FILL
@@ -52,7 +56,7 @@
 
 // Syed Fahad's Subtraction-based Attack Mask Generation algorithm.
 // Low memory, about HQ speed.
-#define USE_SBAMG
+//#define USE_SBAMG
 
 // Dann Corbit's "switch" approach. May God have mercy on your soul.
 // Zero memory, very long compile time, about Kogge-Stone speed.
