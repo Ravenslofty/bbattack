@@ -26,7 +26,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "../bbattack.h"
 #include "../bbattack-private.h"
 
 static uint64_t BishopMask[64];
