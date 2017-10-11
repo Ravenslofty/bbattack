@@ -50,9 +50,13 @@
 // High memory, very fast.
 //#define USE_MAGIC
 
+// Syed Fahad's Subtraction-based Attack Mask Generation algorithm.
+// Low memory, about HQ speed.
+#define USE_SBAMG
+
 // Dann Corbit's "switch" approach. May God have mercy on your soul.
 // Zero memory, very long compile time, about Kogge-Stone speed.
-#define USE_SWITCH
+//#define USE_SWITCH
 
 #ifdef __cplusplus
 extern "C" {
